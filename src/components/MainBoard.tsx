@@ -13,11 +13,11 @@ interface MainBoardProps {
 }
 
 export const BOARDS = [
-  { id: 'music', name: '音乐', emoji: '🎵', color: '#FF6B6B', bgColor: 'rgba(255, 107, 107, 0.12)' },
-  { id: 'games', name: '游戏', emoji: '🎮', color: '#4ECDC4', bgColor: 'rgba(78, 205, 196, 0.12)' },
-  { id: 'anime', name: '动漫', emoji: '📺', color: '#FFE66D', bgColor: 'rgba(255, 230, 109, 0.15)' },
-  { id: 'movies', name: '影视', emoji: '🎬', color: '#A78BFA', bgColor: 'rgba(167, 139, 250, 0.12)' },
-  { id: 'sports', name: '运动', emoji: '⚽', color: '#FB923C', bgColor: 'rgba(251, 146, 60, 0.12)' },
+  { id: 'music', name: '音乐', emoji: '', color: '#3B82F6', bgColor: 'rgba(59, 130, 246, 0.08)' },
+  { id: 'games', name: '游戏', emoji: '', color: '#06B6D4', bgColor: 'rgba(6, 182, 212, 0.08)' },
+  { id: 'anime', name: '动漫', emoji: '', color: '#6366F1', bgColor: 'rgba(99, 102, 241, 0.08)' },
+  { id: 'movies', name: '影视', emoji: '', color: '#8B5CF6', bgColor: 'rgba(139, 92, 246, 0.08)' },
+  { id: 'sports', name: '运动', emoji: '', color: '#0EA5E9', bgColor: 'rgba(14, 165, 233, 0.08)' },
 ] as const;
 
 export type BoardId = typeof BOARDS[number]['id'];
@@ -40,15 +40,14 @@ export default function MainBoard({ user }: MainBoardProps) {
   return (
     <div className="app-bg min-h-screen pb-8">
       {/* Header */}
-      <header className="sticky top-0 z-40 backdrop-blur-md bg-white/20 border-b border-white/20">
+      <header className="sticky top-0 z-40 backdrop-blur-md bg-white/40 border-b border-blue-100/50">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-2xl">🎉</span>
-            <h1 className="text-lg md:text-xl font-bold text-white">破冰大作战</h1>
+            <h1 className="text-lg md:text-xl font-bold text-blue-800">破冰大作战</h1>
           </div>
-          <div className="flex items-center gap-2 bg-white/20 rounded-full px-3 py-1.5">
-            <span className="text-sm text-white/80">你好，</span>
-            <span className="font-semibold text-white text-sm md:text-base">{user.nickname}</span>
+          <div className="flex items-center gap-2 bg-blue-50/80 rounded-full px-3 py-1.5">
+            <span className="text-sm text-blue-600/80">你好，</span>
+            <span className="font-semibold text-blue-800 text-sm md:text-base">{user.nickname}</span>
           </div>
         </div>
       </header>
@@ -68,11 +67,6 @@ export default function MainBoard({ user }: MainBoardProps) {
           ))}
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="text-center mt-8 text-white/50 text-xs">
-        数据每 5 秒自动刷新
-      </footer>
     </div>
   );
 }

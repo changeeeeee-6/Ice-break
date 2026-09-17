@@ -11,6 +11,7 @@
 - 热门排行
 - 标签详情（查看添加者和投票者）
 - 标签防重复（大小写、全角半角、中英文标点归一化）
+- 标签详情弹窗内 emoji 互动墙
 - 数据每 5 秒自动刷新
 
 ## 技术栈
@@ -31,7 +32,8 @@ src/
 │   │   ├── users/route.ts        # POST - 创建用户
 │   │   ├── tags/route.ts         # GET - 查询标签, POST - 创建标签
 │   │   ├── tags/[id]/route.ts    # GET - 标签详情
-│   │   └── votes/route.ts        # POST - 切换投票
+│   │   ├── votes/route.ts        # POST - 切换投票
+│   │   └── emoji-reactions/route.ts  # GET - 查询emoji, POST - 发送emoji
 │   ├── layout.tsx
 │   ├── page.tsx                  # 主入口（昵称判断）
 │   └── globals.css               # 全局样式 + 自定义动画
@@ -55,6 +57,7 @@ src/
 - `users` - 用户表（id, nickname, created_at）
 - `tags` - 标签表（id, board, name, normalized_name, created_by, created_at）
 - `tag_votes` - 投票表（id, tag_id, user_id, created_at），唯一约束 (tag_id, user_id)
+- `emoji_reactions` - emoji互动表（id, tag_id, user_id, emoji, created_at）
 
 ## 开发命令
 

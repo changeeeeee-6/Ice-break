@@ -128,7 +128,6 @@ export default function BoardSection({ board, userId, refreshKey, onDataChange, 
         {/* Board Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <span className="text-2xl">{board.emoji}</span>
             <h2 className="text-lg font-bold text-gray-800">{board.name}</h2>
             <span className="text-xs text-gray-400 bg-gray-100 rounded-full px-2 py-0.5">
               {tags.length}
@@ -140,7 +139,7 @@ export default function BoardSection({ board, userId, refreshKey, onDataChange, 
               className="hot-badge"
               style={{ background: board.color }}
             >
-              🔥 热门
+              热门
             </button>
           )}
         </div>
@@ -177,7 +176,7 @@ export default function BoardSection({ board, userId, refreshKey, onDataChange, 
             value={newTag}
             onChange={(e) => setNewTag(e.target.value)}
             placeholder="添加新标签..."
-            className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-gray-400 transition-colors"
+            className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-blue-300 transition-colors"
             maxLength={200}
           />
           <button
@@ -192,7 +191,7 @@ export default function BoardSection({ board, userId, refreshKey, onDataChange, 
 
         {/* Message */}
         {message && (
-          <p className={`mt-2 text-xs ${message.type === 'error' ? 'text-red-500' : 'text-green-600'}`}>
+          <p className={`mt-2 text-xs ${message.type === 'error' ? 'text-red-500' : 'text-blue-600'}`}>
             {message.text}
           </p>
         )}
@@ -203,7 +202,6 @@ export default function BoardSection({ board, userId, refreshKey, onDataChange, 
         <HotRanking
           tags={hotTags}
           boardName={board.name}
-          boardEmoji={board.emoji}
           boardColor={board.color}
           onClose={() => setShowHot(false)}
         />
@@ -213,7 +211,10 @@ export default function BoardSection({ board, userId, refreshKey, onDataChange, 
       {selectedTag && (
         <TagDetailModal
           tag={selectedTag}
+          userId={userId}
+          boardColor={board.color}
           onClose={() => setSelectedTag(null)}
+          onDataChange={onDataChange}
         />
       )}
     </>

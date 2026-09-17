@@ -48,25 +48,7 @@ export default function NicknameEntry({ onNicknameSet }: NicknameEntryProps) {
 
   return (
     <div className="app-bg flex items-center justify-center px-4">
-      {/* Decorative confetti */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        {['🎉', '🎊', '✨', '🌟', '💫', '🎈', '🎵', '🎮'].map((emoji, i) => (
-          <span
-            key={i}
-            className="confetti text-2xl"
-            style={{
-              left: `${10 + i * 12}%`,
-              animationDuration: `${3 + i * 0.7}s`,
-              animationDelay: `${i * 0.3}s`,
-            }}
-          >
-            {emoji}
-          </span>
-        ))}
-      </div>
-
       <div className="board-card p-8 md:p-12 w-full max-w-md text-center animate-fade-in-up relative z-10">
-        <div className="text-5xl mb-4">🎉</div>
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
           破冰大作战
         </h1>
@@ -80,8 +62,8 @@ export default function NicknameEntry({ onNicknameSet }: NicknameEntryProps) {
               type="text"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
-              placeholder="输入你的昵称 (支持 emoji 😎)"
-              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:outline-none transition-colors text-center text-lg"
+              placeholder="输入你的昵称 (支持 emoji)"
+              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-400 focus:outline-none transition-colors text-center text-lg"
               maxLength={100}
               autoFocus
             />
@@ -94,9 +76,9 @@ export default function NicknameEntry({ onNicknameSet }: NicknameEntryProps) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold text-lg shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold text-lg shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? '加入中...' : '开始破冰 🚀'}
+            {loading ? '加入中...' : '开始破冰'}
           </button>
         </form>
 

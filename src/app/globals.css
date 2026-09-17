@@ -92,7 +92,7 @@
 
 /* Custom styles for icebreaker app */
 .app-bg {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 40%, #f0f9ff 100%);
   min-height: 100vh;
 }
 
@@ -169,19 +169,6 @@
 
 .animate-fade-in-up {
   animation: fade-in-up 0.5s ease forwards;
-}
-
-@keyframes confetti-fall {
-  0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-}
-
-.confetti {
-  position: fixed;
-  top: 0;
-  pointer-events: none;
-  z-index: 50;
-  animation: confetti-fall linear forwards;
 }
 
 /* Hot ranking badge */

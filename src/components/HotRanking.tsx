@@ -10,21 +10,18 @@ interface TagData {
 interface HotRankingProps {
   tags: TagData[];
   boardName: string;
-  boardEmoji: string;
   boardColor: string;
   onClose: () => void;
 }
 
-const RANK_EMOJI = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
-
-export default function HotRanking({ tags, boardName, boardEmoji, boardColor, onClose }: HotRankingProps) {
+export default function HotRanking({ tags, boardName, boardColor, onClose }: HotRankingProps) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-gray-800">
-            🔥 {boardEmoji} {boardName}热门排行
+            {boardName}热门排行
           </h3>
           <button
             onClick={onClose}
@@ -41,8 +38,8 @@ export default function HotRanking({ tags, boardName, boardEmoji, boardColor, on
               key={tag.id}
               className="flex items-center gap-3 p-3 rounded-xl transition-colors hover:bg-gray-50"
             >
-              <span className="text-xl w-8 text-center">
-                {RANK_EMOJI[index] || `${index + 1}`}
+              <span className="text-sm font-bold w-8 text-center" style={{ color: boardColor }}>
+                #{index + 1}
               </span>
               <div className="flex-1 min-w-0">
                 <div className="font-medium text-gray-800 truncate">

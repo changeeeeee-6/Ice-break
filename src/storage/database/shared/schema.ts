@@ -45,3 +45,18 @@ export const tagVotes = pgTable(
     index("tag_votes_user_id_idx").on(table.user_id),
   ]
 );
+
+export const emojiReactions = pgTable(
+  "emoji_reactions",
+  {
+    id: varchar("id", { length: 36 }).primaryKey().default(sql`gen_random_uuid()`),
+    tag_id: varchar("tag_id", { length: 36 }).notNull().references(() => tags.id, { onDelete: "cascade" }),
+    user_id: varchar("user_id", { length: 36 }).notNull().references(() => users.id),
+    emoji: varchar("emoji", { length: 50 }).notNull(),
+    created_at: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index("emoji_reactions_tag_id_idx").on(table.tag_id),
+    index("emoji_reactions_user_id_idx").on(table.user_id),
+  ]
+);
