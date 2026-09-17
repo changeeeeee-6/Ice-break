@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>兴趣破冰</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f5f6f8;--card:#fff;--text:#1a1a2e;--text-2:#636e72;--text-3:#b2bec3;
+  --border:#e4e6eb;--shadow:0 2px 12px rgba(0,0,0,.06);--radius:12px;--cat:#6c5ce7;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6}
+.hidden{display:none!important}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input{font-family:inherit;outline:none;border:none}
+
+/* ===== Welcome ===== */
+#welcome{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
+  background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}
+.welcome-card{background:#fff;border-radius:20px;padding:40px 32px;max-width:360px;width:100%;
+  box-shadow:0 20px 60px rgba(0,0,0,.15);text-align:center;animation:fadeUp .5s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.welcome-icon{margin-bottom:24px}
+.welcome-icon svg{width:40px;height:40px}
+.welcome-card input{width:100%;padding:14px 18px;font-size:16px;border:2px solid var(--border);
+  border-radius:10px;text-align:center;transition:border-color .25s}
+.welcome-card input:focus{border-color:#667eea}
+.welcome-card button{width:100%;padding:14px;margin-top:12px;font-size:16px;font-weight:600;
+  color:#fff;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:10px;
+  transition:transform .15s,box-shadow .2s}
+.welcome-card button:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(102,126,234,.4)}
+.welcome-card button:active{transform:translateY(0)}
+
+/* ===== Main ===== */
+#main{min-height:100vh;display:flex;flex-direction:column}
+.header{background:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.header-user{font-size:14px;color:var(--text-2)}
+.header-user strong{color:var(--text);font-weight:700}
+.header-actions{display:flex;gap:8px}
+.header-btn{padding:7px 14px;font-size:13px;font-weight:500;border-radius:8px;background:#f1f2f6;
+  color:var(--text);transition:background .2s;display:flex;align-items:center;gap:5px}
+.header-btn:hover{background:#e4e6ef}
+.header-btn svg{width:14px;height:14px}
+
+/* ===== Tabs ===== */
+.tabs{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;scrollbar-width:none;
+  background:#fff;border-bottom:1px solid var(--border)}
+.tabs::-webkit-scrollbar{display:none}
+.tab{display:flex;align-items:center;gap:7px;padding:8px 18px;font-size:14px;font-weight:600;
+  border-radius:20px;white-space:nowrap;transition:all .2s;color:var(--text-2);background:#f1f2f6}
+.tab svg{width:16px;height:16px}
+.tab:hover{color:var(--cat)}
+.tab.active{color:#fff;background:var(--cat)}
+
+/* ===== Content ===== */
+.content{flex:1;max-width:700px;width:100%;margin:0 auto;padding:16px 20px 48px}
+.add-bar{display:flex;gap:10px;margin-bottom:14px}
+.add-bar input{flex:1;padding:12px 16px;font-size:15px;border:2px solid var(--border);
+  border-radius:10px;transition:border-color .25s}
+.add-bar input:focus{border-color:var(--cat)}
+.add-btn{padding:0 22px;font-size:15px;font-weight:600;color:#fff;background:var(--cat);
+  border-radius:10px;transition:filter .2s,transform .15s;display:flex;align-items:center;gap:5px}
+.add-btn:hover{filter:brightness(1.08)}
+.add-btn:active{transform:scale(.96)}
+.add-btn svg{width:16px;height:16px}
+
+.filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.filter-btn{padding:5px 14px;font-size:13px;font-weight:500;border-radius:14px;background:#fff;
+  border:1px solid var(--border);color:var(--text-2);transition:all .2s}
+.filter-btn:hover{border-color:var(--cat);color:var(--cat)}
+.filter-btn.active{background:var(--cat);color:#fff;border-color:var(--cat)}
+.filter-info{margin-left:auto;font-size:12px;color:var(--text-3)}
+
+/* ===== Tags ===== */
+.tags{display:flex;flex-direction:column;gap:8px}
+.tag-card{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#fff;
+  border-radius:10px;box-shadow:var(--shadow);cursor:pointer;transition:transform .15s,box-shadow .15s;
+  position:relative;overflow:hidden;animation:slideIn .3s ease}
+.tag-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cat)}
+.tag-card:hover{transform:translateX(3px)}
+@keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.tag-body{flex:1;min-width:0}
+.tag-text{font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tag-meta{display:flex;align-items:center;gap:6px;margin-top:2px}
+.tag-creator{font-size:12px;color:var(--text-3)}
+.tag-badge{font-size:10px;padding:2px 7px;border-radius:8px;
+  background:color-mix(in srgb,var(--cat) 10%,transparent);color:var(--cat);font-weight:500}
+.plus-btn{display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:16px;
+  background:#f7f8fa;font-size:13px;font-weight:600;color:var(--text-2);
+  transition:all .2s;border:1.5px solid transparent}
+.plus-btn:hover{background:color-mix(in srgb,var(--cat) 8%,transparent)}
+.plus-btn.active{background:color-mix(in srgb,var(--cat) 12%,transparent);
+  border-color:var(--cat);color:var(--cat)}
+.plus-btn svg{width:16px;height:16px}
+.plus-btn.active svg{fill:var(--cat);animation:pop .35s ease}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+.plus-count{min-width:14px;text-align:center}
+.plus-disabled{font-size:11px;color:var(--text-3);padding:5px 8px;white-space:nowrap}
+
+/* ===== Empty ===== */
+.empty{text-align:center;padding:40px 20px;color:var(--text-3)}
+.empty svg{width:40px;height:40px;margin-bottom:10px;opacity:.35}
+.empty p{font-size:14px}
+
+/* ===== Modal ===== */
+.modal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-bg{position:absolute;inset:0;background:rgba(0,0,0,.4);animation:fadeIn .2s}
+.modal-card{position:relative;background:#fff;border-radius:16px;max-width:480px;width:100%;
+  max-height:85vh;overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 20px 60px rgba(0,0,0,.2);animation:modalIn .3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(15px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;
+  border-bottom:1px solid var(--border)}
+.modal-head h2{font-size:17px;font-weight:700}
+.modal-close{font-size:22px;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;color:var(--text-3);transition:all .2s}
+.modal-close:hover{background:#f1f2f6;color:var(--text)}
+.modal-body{overflow-y:auto;padding:18px 20px;flex:1}
+.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end}
+
+/* ===== Stats ===== */
+.stat-cat{margin-bottom:20px}
+.stat-cat:last-child{margin-bottom:0}
+.stat-cat-head{display:flex;align-items:center;gap:7px;font-size:15px;font-weight:700;
+  margin-bottom:10px;color:var(--cat)}
+.stat-cat-head svg{width:18px;height:18px}
+.stat-cat-count{margin-left:auto;font-size:11px;color:var(--text-3);font-weight:400}
+.stat-bars{display:flex;flex-direction:column;gap:4px}
+.stat-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;
+  cursor:pointer;transition:background .2s}
+.stat-item:hover{background:#f7f8fa}
+.stat-rank{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;flex-shrink:0;background:#e4e6ef;color:var(--text-2)}
+.stat-item:nth-child(1) .stat-rank{background:#ffd700;color:#fff}
+.stat-item:nth-child(2) .stat-rank{background:#c0c0c0;color:#fff}
+.stat-item:nth-child(3) .stat-rank{background:#cd7f32;color:#fff}
+.stat-label{flex:1;min-width:0;font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stat-track{flex:1;height:6px;border-radius:3px;background:#f1f2f6;overflow:hidden;min-width:30px}
+.stat-fill{height:100%;border-radius:3px;transition:width .4s}
+.stat-count{font-size:13px;font-weight:700;min-width:18px;text-align:right;color:var(--cat)}
+.stat-empty{text-align:center;padding:10px;font-size:12px;color:var(--text-3)}
+
+/* ===== Members ===== */
+.mem-head{text-align:center;margin-bottom:16px}
+.mem-tag{font-size:20px;font-weight:700;color:var(--cat)}
+.mem-cat{font-size:12px;color:var(--text-3);margin-top:2px}
+.mem-stats{display:flex;gap:10px;margin-bottom:16px}
+.mem-stat{flex:1;text-align:center;padding:14px;border-radius:10px;background:#f7f8fa}
+.mem-stat .num{font-size:24px;font-weight:800;color:var(--cat)}
+.mem-stat .lbl{font-size:11px;color:var(--text-3);margin-top:2px}
+.mem-sec{margin-bottom:14px}
+.mem-sec-title{font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:6px;
+  display:flex;align-items:center;gap:5px}
+.mem-sec-title::before{content:'';width:3px;height:12px;border-radius:2px;background:var(--cat)}
+.mem-list{display:flex;flex-wrap:wrap;gap:6px}
+.mem-chip{padding:7px 14px;border-radius:16px;font-size:13px;font-weight:500;
+  background:color-mix(in srgb,var(--cat) 6%,#fff);border:1px solid color-mix(in srgb,var(--cat) 15%,transparent)}
+.mem-chip.creator{background:var(--cat);color:#fff;border-color:var(--cat)}
+.mem-empty{text-align:center;padding:14px;font-size:13px;color:var(--text-3)}
+
+/* ===== Danger & Toast ===== */
+.danger{padding:7px 16px;font-size:13px;font-weight:500;border-radius:8px;background:#fff;
+  border:1px solid #e74c3c;color:#e74c3c;transition:all .2s}
+.danger:hover{background:#e74c3c;color:#fff}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);
+  background:#1a1a2e;color:#fff;padding:10px 22px;border-radius:20px;font-size:13px;
+  box-shadow:0 6px 24px rgba(0,0,0,.15);z-index:300;opacity:0;transition:all .3s;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+@media(max-width:600px){
+  .welcome-card{padding:32px 24px}
+  .header{padding:10px 16px}
+  .tabs{padding:8px 16px}
+  .content{padding:14px 16px 40px}
+  .tag-card{padding:10px 14px}
+  .tag-text{font-size:14px}
+  .plus-btn{padding:6px 10px;font-size:12px}
+  .modal-card{max-height:90vh}
+}
+</style>
+</head>
+<body>
+
+<div id="toast" class="toast"></div>
+
+<!-- ===== Welcome ===== -->
+<div id="welcomeScreen">
+  <div class="welcome-card">
+    <div class="welcome-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="url(#wg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <defs><linearGradient id="wg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#667eea"/><stop offset="100%" style="stop-color:#764ba2"/>
+        </linearGradient></defs>
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+    </div>
+    <input id="nicknameInput" type="text" placeholder="输入你的昵称" maxlength="20" autocomplete="off" />
+    <button onclick="handleWelcome()">进入</button>
+  </div>
+</div>
+
+<!-- ===== Main ===== -->
+<div id="mainScreen" class="hidden">
+  <header class="header">
+    <div class="header-user">Hi, <strong id="currentUserName"></strong></div>
+    <div class="header-actions">
+      <button class="header-btn" onclick="showStats()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>统计
+      </button>
+      <button class="header-btn" onclick="changeName()">退出</button>
+    </div>
+  </header>
+  <nav class="tabs" id="tabs"></nav>
+  <main class="content">
+    <div class="add-bar">
+      <input id="tagInput" type="text" placeholder="添加你的兴趣..." maxlength="30" autocomplete="off" />
+      <button class="add-btn" onclick="addTag()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>添加
+      </button>
+    </div>
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">全部</button>
+      <button class="filter-btn" data-filter="mine" onclick="setFilter('mine')">我的</button>
+      <span class="filter-info" id="filterInfo"></span>
+    </div>
+    <div class="tags" id="tagsList"></div>
+  </main>
+</div>
+
+<!-- ===== Stats Modal ===== -->
+<div id="statsModal" class="modal hidden">
+  <div class="modal-bg" onclick="closeStats()"></div>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>热度排行</h2>
+      <button class="modal-close" onclick="closeStats()">&times;</button>
+    </div>
+    <div class="modal-body" id="statsContent"></div>
+    <div class="modal-foot">
+      <button class="danger" onclick="clearAllData()">清除所有数据</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Members Modal ===== -->
+<div id="membersModal" class="modal hidden">
+  <div class="modal-bg" onclick="closeMembers()"></div>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>兴趣详情</h2>
+      <button class="modal-close" onclick="closeMembers()">&times;</button>
+    </div>
+    <div class="modal-body" id="membersContent"></div>
+  </div>
+</div>
+
+<script>
+const CATEGORIES = [
+  {id:'music',name:'音乐',color:'#6c5ce7',icon:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>'},
+  {id:'games',name:'游戏',color:'#00b894',icon:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM11 13H9v2H7v-2H5v-2h2V9h2v2h2v2zm6 1c-.83 0-1.5-.67-1.5-1.5S16.17 11 17 11s1.5.67 1.5 1.5S17.83 14 17 14zm3-3c-.83 0-1.5-.67-1.5-1.5S19.17 8 20 8s1.5.67 1.5 1.5S20.83 11 20 11z"/></svg>'},
+  {id:'anime',name:'动漫',color:'#e17055',icon:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.36H22l-6.18 4.52L18.2 21 12 16.52 5.8 21l2.38-7.12L2 9.36h7.6L12 2z"/></svg>'},
+  {id:'movie',name:'影视',color:'#0984e3',icon:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/></svg>'},
+  {id:'sports',name:'运动',color:'#e84393',icon:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM5.7 7.3C7.1 5.6 9.3 4.5 11.8 4.5c.3 0 .6 0 .9.1-1.8 1.6-3.6 3.9-5 6.7-1.4-1.2-2.2-2.6-2.4-3.4-.1-.2-.1-.4-.1-.6zm6.5 12.2c-2.2-.1-4.2-1.1-5.6-2.6.5-1.5 1.9-3.4 3.9-4.8 1.2 2.4 2.7 4.4 4.3 5.9-1 .9-2.2 1.4-3.5 1.5zm5.3-3.2c-1.5-1.4-3-3.4-4.2-5.7 2.2-.6 4.2-.5 5.5-.3.1.4.2.8.2 1.2 0 1.9-.5 3.6-1.5 4.8zM9.3 11.2c1.6-.5 3.3-.5 4.8-.1 1.2 2.2 2.6 4.1 4 5.5-.4.4-.8.7-1.3 1-1.9-1.8-3.6-4-4.8-6.7-1.1.4-2.1.9-3 1.6-.2-.4-.4-.9-.5-1.3z"/></svg>'},
+];
+
+const STORAGE_KEY = 'ice_breaker_client_v2';
+
+let state = {
+  currentUser: null,
+  activeCategory: 'music',
+  filter: 'all',
+  serverData: { tags: { music:[], games:[], anime:[], movie:[], sports:[] } }
+};
+
+let lastDataStr = '';
+let pollTimer = null;
+
+// ===== Utils =====
+function escapeHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function loadClientState() {
+  try {
+    const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    if (s.currentUser) state.currentUser = s.currentUser;
+    if (s.activeCategory) state.activeCategory = s.activeCategory;
+  } catch(e) {}
+}
+
+function saveClientState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    currentUser: state.currentUser,
+    activeCategory: state.activeCategory
+  }));
+}
+
+// ===== API =====
+async function apiGet(path) {
+  const res = await fetch(path);
+  if (!res.ok) throw new Error('network');
+  return res.json();
+}
+
+async function apiPost(path, body) {
+  const res = await fetch(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error('network');
+  return res.json();
+}
+
+// ===== Sync =====
+async function syncFromServer() {
+  try {
+    const data = await apiGet('/api/data');
+    if (!data || !data.tags) return;
+    const str = JSON.stringify(data);
+    if (str !== lastDataStr) {
+      lastDataStr = str;
+      state.serverData = data;
+      if (!document.getElementById('mainScreen').classList.contains('hidden')) {
+        renderTags();
+      }
+    }
+  } catch(e) {}
+}
+
+function startPolling() {
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(async () => {
+    if (!document.hidden) await syncFromServer();
+  }, 2000);
+}
+
+// ===== Welcome =====
+async function handleWelcome() {
+  const name = document.getElementById('nicknameInput').value.trim();
+  if (!name) { showToast('请输入昵称'); return; }
+  if (name.length > 20) { showToast('昵称最多20个字'); return; }
+  state.currentUser = name;
+  saveClientState();
+  await syncFromServer();
+  showMain();
+}
+
+function showMain() {
+  document.getElementById('welcomeScreen').classList.add('hidden');
+  document.getElementById('mainScreen').classList.remove('hidden');
+  document.getElementById('currentUserName').textContent = state.currentUser;
+  renderTabs();
+  renderTags();
+  startPolling();
+}
+
+function changeName() {
+  state.currentUser = null;
+  saveClientState();
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+  document.getElementById('mainScreen').classList.add('hidden');
+  document.getElementById('welcomeScreen').classList.remove('hidden');
+  document.getElementById('nicknameInput').value = '';
+  setTimeout(() => document.getElementById('nicknameInput').focus(), 100);
+}
+
+// ===== Tabs =====
+function getCat() { return CATEGORIES.find(c => c.id === state.activeCategory); }
+
+function renderTabs() {
+  document.getElementById('tabs').innerHTML = CATEGORIES.map(cat => `
+    <button class="tab ${state.activeCategory === cat.id ? 'active' : ''}" style="--cat:${cat.color}" onclick="switchCategory('${cat.id}')">
+      ${cat.icon}<span>${cat.name}</span>
+    </button>
+  `).join('');
+}
+
+function switchCategory(id) {
+  state.activeCategory = id;
+  state.filter = 'all';
+  saveClientState();
+  renderTabs();
+  renderTags();
+}
+
+// ===== Tags =====
+function renderTags() {
+  const cat = getCat();
+  document.documentElement.style.setProperty('--cat', cat.color);
+
+  let tags = [...(state.serverData.tags[state.activeCategory] || [])];
+
+  if (state.filter === 'mine') {
+    tags = tags.filter(t => t.creator === state.currentUser || t.plusOnes.includes(state.currentUser));
+  }
+
+  tags.sort((a, b) => b.plusOnes.length - a.plusOnes.length);
+
+  const allTags = state.serverData.tags[state.activeCategory] || [];
+  const mineCount = allTags.filter(t => t.creator === state.currentUser || t.plusOnes.includes(state.currentUser)).length;
+  document.getElementById('filterInfo').textContent = state.filter === 'mine' ? `共 ${mineCount} 个` : `共 ${allTags.length} 个`;
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.filter === state.filter);
+  });
+
+  const list = document.getElementById('tagsList');
+  if (tags.length === 0) {
+    list.innerHTML = `<div class="empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+      <p>${state.filter === 'mine' ? '你还没有在这个板块表达兴趣' : '还没有人添加兴趣，快来成为第一个'}</p>
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = tags.map(tag => {
+    const hasPlus = tag.plusOnes.includes(state.currentUser);
+    const isCreator = tag.creator === state.currentUser;
+    return `
+      <div class="tag-card" style="--cat:${cat.color}" onclick="showMembers('${state.activeCategory}','${tag.id}')">
+        <div class="tag-body">
+          <div class="tag-text">${escapeHtml(tag.text)}</div>
+          <div class="tag-meta">
+            <span class="tag-creator">by ${escapeHtml(tag.creator)}</span>
+            ${isCreator ? '<span class="tag-badge">我创建的</span>' : ''}
+            ${hasPlus ? '<span class="tag-badge">我+1了</span>' : ''}
+          </div>
+        </div>
+        <div>
+          ${isCreator
+            ? '<span class="plus-disabled">你创建的</span>'
+            : `<button class="plus-btn ${hasPlus ? 'active' : ''}" onclick="event.stopPropagation();togglePlus('${state.activeCategory}','${tag.id}')">
+                <svg viewBox="0 0 24 24" fill="${hasPlus ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+                <span class="plus-count">${tag.plusOnes.length}</span>
+              </button>`}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function addTag() {
+  const input = document.getElementById('tagInput');
+  const text = input.value.trim();
+  if (!text) { showToast('请输入兴趣内容'); return; }
+  if (text.length > 30) { showToast('内容最多30个字'); return; }
+
+  input.value = '';
+
+  try {
+    const res = await apiPost('/api/add', {
+      category: state.activeCategory,
+      text: text,
+      creator: state.currentUser
+    });
+    if (res.error === 'duplicate') {
+      const msg = res.existing ? `"${res.existing}" 已经有了，去 +1 吧` : '这个兴趣已经有了，去 +1 吧';
+      showToast(msg);
+      if (res.tagId) {
+        setTimeout(() => showMembers(state.activeCategory, res.tagId), 600);
+      }
+      return;
+    }
+    await syncFromServer();
+    showToast('添加成功');
+  } catch(e) {
+    showToast('添加失败，请检查网络');
+    input.value = text;
+  }
+}
+
+async function togglePlus(catId, tagId) {
+  try {
+    const res = await apiPost('/api/plus', {
+      category: catId,
+      tagId: tagId,
+      user: state.currentUser
+    });
+    if (res.error === 'self') { showToast('不能给自己+1'); return; }
+    await syncFromServer();
+  } catch(e) {
+    showToast('操作失败，请重试');
+  }
+}
+
+function setFilter(f) {
+  state.filter = f;
+  renderTags();
+}
+
+// ===== Members =====
+function showMembers(catId, tagId) {
+  const cat = CATEGORIES.find(c => c.id === catId);
+  const tag = (state.serverData.tags[catId] || []).find(t => t.id === tagId);
+  if (!tag) return;
+
+  const total = tag.plusOnes.length + 1;
+  const c = document.getElementById('membersContent');
+  c.style.setProperty('--cat', cat.color);
+
+  c.innerHTML = `
+    <div class="mem-head">
+      <div class="mem-tag">${escapeHtml(tag.text)}</div>
+      <div class="mem-cat">${cat.name}</div>
+    </div>
+    <div class="mem-stats">
+      <div class="mem-stat"><div class="num">${total}</div><div class="lbl">总人数</div></div>
+      <div class="mem-stat"><div class="num">${tag.plusOnes.length}</div><div class="lbl">+1人数</div></div>
+    </div>
+    <div class="mem-sec">
+      <div class="mem-sec-title">发起人</div>
+      <div class="mem-list">
+        <div class="mem-chip creator">${escapeHtml(tag.creator)}</div>
+      </div>
+    </div>
+    ${tag.plusOnes.length > 0 ? `
+      <div class="mem-sec">
+        <div class="mem-sec-title">+1的小伙伴 (${tag.plusOnes.length})</div>
+        <div class="mem-list">
+          ${tag.plusOnes.map(n => `<div class="mem-chip">${escapeHtml(n)}</div>`).join('')}
+        </div>
+      </div>` : '<div class="mem-empty">还没有人+1</div>'}
+  `;
+
+  document.getElementById('membersModal').classList.remove('hidden');
+}
+
+function closeMembers() { document.getElementById('membersModal').classList.add('hidden'); }
+
+// ===== Stats =====
+function showStats() {
+  const c = document.getElementById('statsContent');
+  c.innerHTML = CATEGORIES.map(cat => {
+    const tags = [...(state.serverData.tags[cat.id] || [])].sort((a, b) => b.plusOnes.length - a.plusOnes.length);
+    const top = tags.filter(t => t.plusOnes.length > 0).slice(0, 5);
+    const max = top.length > 0 ? top[0].plusOnes.length : 1;
+
+    return `
+      <div class="stat-cat" style="--cat:${cat.color}">
+        <div class="stat-cat-head" style="color:${cat.color}">
+          ${cat.icon}<span>${cat.name}</span>
+          <span class="stat-cat-count">${tags.length}个兴趣</span>
+        </div>
+        ${top.length > 0 ? `
+          <div class="stat-bars">
+            ${top.map((tag, i) => `
+              <div class="stat-item" onclick="closeStats();showMembers('${cat.id}','${tag.id}')">
+                <span class="stat-rank">${i+1}</span>
+                <span class="stat-label">${escapeHtml(tag.text)}</span>
+                <div class="stat-track"><div class="stat-fill" style="width:${Math.round(tag.plusOnes.length/max*100)}%;background:${cat.color}"></div></div>
+                <span class="stat-count">${tag.plusOnes.length}</span>
+              </div>
+            `).join('')}
+          </div>` : '<div class="stat-empty">暂无+1数据</div>'}
+      </div>`;
+  }).join('');
+
+  document.getElementById('statsModal').classList.remove('hidden');
+}
+
+function closeStats() { document.getElementById('statsModal').classList.add('hidden'); }
+
+// ===== Clear =====
+async function clearAllData() {
+  if (!confirm('确定清除所有数据吗？此操作不可恢复。')) return;
+  try {
+    await apiPost('/api/clear', {});
+    lastDataStr = '';
+    await syncFromServer();
+    closeStats();
+    renderTags();
+    showToast('数据已清除');
+  } catch(e) {
+    showToast('清除失败');
+  }
+}
+
+// ===== Init =====
+function init() {
+  loadClientState();
+
+  document.getElementById('nicknameInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleWelcome();
+  });
+  document.getElementById('tagInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') addTag();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeStats(); closeMembers(); }
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && state.currentUser) syncFromServer();
+  });
+
+  if (state.currentUser) {
+    syncFromServer().then(() => showMain());
+  } else {
+    setTimeout(() => document.getElementById('nicknameInput').focus(), 200);
+  }
+}
+
+init();
+</script>
+</body>
+</html>
