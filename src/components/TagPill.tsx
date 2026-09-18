@@ -13,16 +13,12 @@ interface TagData {
 
 interface TagPillProps {
   tag: TagData;
-  userId: string;
-  boardColor: string;
-  boardBgColor: string;
   onVote: (tagId: string) => void;
   onClick: () => void;
 }
 
-export default function TagPill({ tag, userId, boardColor, boardBgColor, onVote, onClick }: TagPillProps) {
+export default function TagPill({ tag, onVote, onClick }: TagPillProps) {
   const [animating, setAnimating] = useState(false);
-  const hasVoted = tag.has_voted;
 
   const handleVote = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -33,24 +29,16 @@ export default function TagPill({ tag, userId, boardColor, boardBgColor, onVote,
 
   return (
     <span
-      className="tag-pill"
-      style={{
-        background: boardBgColor,
-        border: `1px solid ${hasVoted ? boardColor : 'transparent'}`,
-      }}
+      className={`tag-pill ${tag.has_voted ? 'voted' : ''}`}
       onClick={onClick}
     >
-      <span className="text-gray-700 max-w-[8rem] truncate">{tag.name}</span>
+      <span className="text-[#d4d4d4] max-w-[8rem] truncate">{tag.name}</span>
 
       {/* Vote button */}
       <button
-        className={`vote-btn ${animating ? 'voted' : ''}`}
-        style={{
-          background: hasVoted ? boardColor : 'rgba(0,0,0,0.06)',
-          color: hasVoted ? 'white' : boardColor,
-        }}
+        className={`vote-btn ${tag.has_voted ? 'voted-on' : ''} ${animating ? 'animate-pop' : ''}`}
         onClick={handleVote}
-        title={hasVoted ? '取消 +1' : '+1'}
+        title={tag.has_voted ? '取消 +1' : '+1'}
       >
         +1
       </button>
@@ -58,8 +46,9 @@ export default function TagPill({ tag, userId, boardColor, boardBgColor, onVote,
       {/* Vote count */}
       {tag.vote_count > 0 && (
         <span
-          className="text-xs font-bold min-w-[1.25rem] text-center"
-          style={{ color: boardColor }}
+          className={`text-xs font-semibold min-w-[1.1rem] text-center ${
+            tag.has_voted ? 'text-[#b3a9f7]' : 'text-[#8a8a8a]'
+          }`}
         >
           {tag.vote_count}
         </span>

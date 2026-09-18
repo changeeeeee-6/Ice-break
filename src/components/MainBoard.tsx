@@ -13,12 +13,12 @@ interface MainBoardProps {
 }
 
 export const BOARDS = [
-  { id: 'music', name: '音乐', emoji: '', color: '#3B82F6', bgColor: 'rgba(59, 130, 246, 0.08)' },
-  { id: 'games', name: '游戏', emoji: '', color: '#06B6D4', bgColor: 'rgba(6, 182, 212, 0.08)' },
-  { id: 'anime', name: '动漫', emoji: '', color: '#6366F1', bgColor: 'rgba(99, 102, 241, 0.08)' },
-  { id: 'movies', name: '影视', emoji: '', color: '#8B5CF6', bgColor: 'rgba(139, 92, 246, 0.08)' },
-  { id: 'sports', name: '运动', emoji: '', color: '#0EA5E9', bgColor: 'rgba(14, 165, 233, 0.08)' },
-  { id: 'other', name: '其他', emoji: '', color: '#22D3EE', bgColor: 'rgba(34, 211, 238, 0.08)' },
+  { id: 'music', name: '音乐' },
+  { id: 'games', name: '游戏' },
+  { id: 'anime', name: '动漫' },
+  { id: 'movies', name: '影视' },
+  { id: 'sports', name: '运动' },
+  { id: 'other', name: '其他' },
 ] as const;
 
 export type BoardId = typeof BOARDS[number]['id'];
@@ -41,21 +41,21 @@ export default function MainBoard({ user }: MainBoardProps) {
   return (
     <div className="app-bg min-h-screen pb-8">
       {/* Header */}
-      <header className="sticky top-0 z-40 backdrop-blur-md bg-white/40 border-b border-blue-100/50">
+      <header className="sticky top-0 z-40 backdrop-blur-md bg-[#1e1e1e]/85 border-b border-border">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <h1 className="text-lg md:text-xl font-bold text-blue-800">破冰大作战</h1>
-          </div>
-          <div className="flex items-center gap-2 bg-blue-50/80 rounded-full px-3 py-1.5">
-            <span className="text-sm text-blue-600/80">你好，</span>
-            <span className="font-semibold text-blue-800 text-sm md:text-base">{user.nickname}</span>
+          <h1 className="text-base md:text-lg font-semibold text-foreground tracking-tight">
+            破冰大作战
+          </h1>
+          <div className="flex items-center gap-1.5 text-sm">
+            <span className="text-[#9b9b9b]">你好，</span>
+            <span className="font-medium text-foreground">{user.nickname}</span>
           </div>
         </div>
       </header>
 
       {/* Boards Grid */}
       <main className="max-w-6xl mx-auto px-4 pt-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {BOARDS.map((board, index) => (
             <BoardSection
               key={board.id}
@@ -63,7 +63,7 @@ export default function MainBoard({ user }: MainBoardProps) {
               userId={user.id}
               refreshKey={refreshKey}
               onDataChange={handleDataChange}
-              style={{ animationDelay: `${index * 0.1}s` }}
+              style={{ animationDelay: `${index * 0.06}s` }}
             />
           ))}
         </div>

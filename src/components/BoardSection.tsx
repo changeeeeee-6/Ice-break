@@ -21,9 +21,6 @@ interface TagData {
 interface BoardConfig {
   id: string;
   name: string;
-  emoji: string;
-  color: string;
-  bgColor: string;
 }
 
 interface BoardSectionProps {
@@ -84,7 +81,7 @@ export default function BoardSection({ board, userId, refreshKey, onDataChange, 
 
       if (data.success) {
         setNewTag('');
-        setMessage({ text: '标签添加成功！', type: 'info' });
+        setMessage({ text: '标签添加成功', type: 'info' });
         onDataChange();
       } else if (data.error === 'duplicate') {
         setMessage({ text: data.message, type: 'info' });
@@ -133,8 +130,8 @@ export default function BoardSection({ board, userId, refreshKey, onDataChange, 
         {/* Board Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <h2 className="text-lg font-bold text-gray-800">{board.name}</h2>
-            <span className="text-xs text-gray-400 bg-gray-100 rounded-full px-2 py-0.5">
+            <h2 className="text-[0.95rem] font-semibold text-foreground">{board.name}</h2>
+            <span className="text-xs text-[#9b9b9b] bg-[#2d2d2d] border border-border rounded px-1.5 py-px">
               {tags.length}
             </span>
           </div>
@@ -142,7 +139,6 @@ export default function BoardSection({ board, userId, refreshKey, onDataChange, 
             <button
               onClick={() => setShowHot(true)}
               className="hot-badge"
-              style={{ background: board.color }}
             >
               热门
             </button>
@@ -152,10 +148,10 @@ export default function BoardSection({ board, userId, refreshKey, onDataChange, 
         {/* Tags Area */}
         <div className="min-h-[4rem] mb-4">
           {loading ? (
-            <div className="text-gray-400 text-sm text-center py-4">加载中...</div>
+            <div className="text-[#6c6c6c] text-sm text-center py-4">加载中…</div>
           ) : tags.length === 0 ? (
-            <div className="text-gray-400 text-sm text-center py-4">
-              还没有标签，快来添加第一个吧！
+            <div className="text-[#6c6c6c] text-sm text-center py-4">
+              还没有标签，快来添加第一个吧
             </div>
           ) : (
             <div className="flex flex-wrap gap-2">
@@ -163,9 +159,6 @@ export default function BoardSection({ board, userId, refreshKey, onDataChange, 
                 <TagPill
                   key={tag.id}
                   tag={tag}
-                  userId={userId}
-                  boardColor={board.color}
-                  boardBgColor={board.bgColor}
                   onVote={handleVote}
                   onClick={() => setSelectedTagId(tag.id)}
                 />
@@ -180,23 +173,26 @@ export default function BoardSection({ board, userId, refreshKey, onDataChange, 
             type="text"
             value={newTag}
             onChange={(e) => setNewTag(e.target.value)}
-            placeholder="添加新标签..."
-            className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-blue-300 transition-colors"
+            placeholder="添加新标签…"
+            className="field-input flex-1 px-3 py-2 rounded-md text-sm"
             maxLength={200}
           />
           <button
             type="submit"
             disabled={adding || !newTag.trim()}
-            className="px-4 py-2 rounded-lg text-white text-sm font-medium transition-all disabled:opacity-40 hover:opacity-90"
-            style={{ background: board.color }}
+            className="btn-primary px-3.5 py-2 rounded-md text-sm font-medium whitespace-nowrap"
           >
-            {adding ? '...' : '+ 添加'}
+            {adding ? '…' : '+ 添加'}
           </button>
         </form>
 
         {/* Message */}
         {message && (
-          <p className={`mt-2 text-xs ${message.type === 'error' ? 'text-red-500' : 'text-blue-600'}`}>
+          <p
+            className={`mt-2 text-xs ${
+              message.type === 'error' ? 'text-[#e06c75]' : 'text-[#b3a9f7]'
+            }`}
+          >
             {message.text}
           </p>
         )}
@@ -207,7 +203,6 @@ export default function BoardSection({ board, userId, refreshKey, onDataChange, 
         <HotRanking
           tags={hotTags}
           boardName={board.name}
-          boardColor={board.color}
           onClose={() => setShowHot(false)}
         />
       )}
@@ -217,7 +212,6 @@ export default function BoardSection({ board, userId, refreshKey, onDataChange, 
         <TagDetailModal
           tag={selectedTag}
           userId={userId}
-          boardColor={board.color}
           onClose={() => setSelectedTagId(null)}
           onDataChange={onDataChange}
           onVote={handleVote}
