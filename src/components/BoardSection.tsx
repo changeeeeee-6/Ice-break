@@ -10,8 +10,8 @@ interface TagData {
   board: string;
   name: string;
   normalized_name: string;
-  created_by: string;
-  creator_name: string;
+  created_by: string | null;
+  creator_name: string | null;
   created_at: string;
   vote_count: number;
   has_voted: boolean;

@@ -59,14 +59,19 @@ export async function GET(
       });
     }
 
+    const isCreator = currentUserId ? currentUserId === tag.created_by : false;
+    // 已加入（本人是发起人，或投过票）才可见发起人身份
+    const canSeeCreator = hasVoted || isCreator;
+
     const result = {
       id: tag.id,
       board: tag.board,
       name: tag.name,
-      creator_name: userMap[tag.created_by] || '未知',
       created_at: tag.created_at,
       vote_count: voteList.length,
       has_voted: hasVoted,
+      // 发起人身份：仅对已加入者可见
+      creator_name: canSeeCreator ? userMap[tag.created_by] || '未知' : null,
       // 仅同投者可见具体名单
       voters: hasVoted
         ? voteList.map((v: { user_id: string; created_at: string }) => ({

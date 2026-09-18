@@ -8,7 +8,7 @@ interface TagData {
   vote_count: number;
   has_voted: boolean;
   voter_names: string[];
-  creator_name: string;
+  creator_name: string | null;
 }
 
 interface EmojiReaction {
@@ -123,13 +123,15 @@ export default function TagDetailModal({ tag, userId, boardColor, onClose, onDat
           </div>
         </div>
 
-        {/* Creator */}
-        <div className="mb-4">
-          <h4 className="text-sm font-semibold text-gray-600 mb-2">添加者</h4>
-          <div className="inline-flex items-center gap-1.5 bg-green-50 text-green-700 rounded-full px-3 py-1 text-sm">
-            <span>{tag.creator_name}</span>
+        {/* Creator - 完全匿名：仅已加入者可见发起人，其他人不显示这一栏 */}
+        {tag.creator_name && (
+          <div className="mb-4">
+            <h4 className="text-sm font-semibold text-gray-600 mb-2">添加者</h4>
+            <div className="inline-flex items-center gap-1.5 bg-green-50 text-green-700 rounded-full px-3 py-1 text-sm">
+              <span>{tag.creator_name}</span>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Voters - 匿名规则：只有自己也 +1 过，才能看到具体名单 */}
         <div className="mb-4">
@@ -162,8 +164,8 @@ export default function TagDetailModal({ tag, userId, boardColor, onClose, onDat
           ) : (
             <div className="bg-amber-50 border border-amber-100 rounded-xl p-3">
               <p className="text-sm text-amber-700">
-                已有 {tag.vote_count} 人 +1。为保护大家的隐私，+1 名单匿名，
-                你也点一下 <span className="font-semibold">+1</span> 就能看到都有谁啦。
+                已有 {tag.vote_count} 人 +1。为保护大家隐私，发起人和 +1 名单均匿名展示，
+                你也点一下 <span className="font-semibold">＋1</span> 加入就能看到都有谁啦。
               </p>
               <div className="flex flex-wrap gap-2 mt-2">
                 {Array.from({ length: Math.min(tag.vote_count, 8) }).map((_, i) => (

@@ -63,25 +63,30 @@ export async function GET(request: NextRequest) {
     }
 
     // Build response.
-    // 匿名规则：仅当当前用户对该标签投过票时，才返回投票者昵称列表；
-    // 否则只返回人数，不泄露任何投票者身份信息。
+    // 完全匿名规则：仅当当前用户已加入该标签（投过票，或本身就是发起人）时，
+    // 才返回发起人身份；只有已投过票的用户才返回具体投票者名单。
+    // 否则一律只返回人数，不泄露任何发起人/投票者身份信息。
     const result = tags.map((tag: { id: string; board: string; name: string; normalized_name: string; created_by: string; created_at: string }) => {
       const tagVotes = votes.filter((v: { tag_id: string }) => v.tag_id === tag.id);
       const voteCount = tagVotes.length;
       const hasVoted = currentUserId
         ? tagVotes.some((v: { user_id: string }) => v.user_id === currentUserId)
         : false;
+      const isCreator = currentUserId ? currentUserId === tag.created_by : false;
+      // 已加入（本人是发起人，或投过票）才可见发起人身份
+      const canSeeCreator = hasVoted || isCreator;
 
       return {
         id: tag.id,
         board: tag.board,
         name: tag.name,
         normalized_name: tag.normalized_name,
-        created_by: tag.created_by,
-        creator_name: userMap[tag.created_by] || '未知',
         created_at: tag.created_at,
         vote_count: voteCount,
         has_voted: hasVoted,
+        // 发起人身份：仅对已加入者可见
+        created_by: canSeeCreator ? tag.created_by : null,
+        creator_name: canSeeCreator ? userMap[tag.created_by] || '未知' : null,
         // 仅同投者可见具体名单
         voter_names: hasVoted
           ? tagVotes.map((v: { user_id: string }) => userMap[v.user_id] || '未知')
@@ -113,7 +118,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const validBoards = ['music', 'games', 'anime', 'movies', 'sports'];
+    const validBoards = ['music', 'games', 'anime', 'movies', 'sports', 'other'];
     if (!validBoards.includes(board)) {
       return NextResponse.json(
         { error: '无效的板块' },

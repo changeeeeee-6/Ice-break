@@ -18,6 +18,7 @@ export const BOARDS = [
   { id: 'anime', name: '动漫', emoji: '', color: '#6366F1', bgColor: 'rgba(99, 102, 241, 0.08)' },
   { id: 'movies', name: '影视', emoji: '', color: '#8B5CF6', bgColor: 'rgba(139, 92, 246, 0.08)' },
   { id: 'sports', name: '运动', emoji: '', color: '#0EA5E9', bgColor: 'rgba(14, 165, 233, 0.08)' },
+  { id: 'other', name: '其他', emoji: '', color: '#22D3EE', bgColor: 'rgba(34, 211, 238, 0.08)' },
 ] as const;
 
 export type BoardId = typeof BOARDS[number]['id'];

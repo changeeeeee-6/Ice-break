@@ -8,7 +8,7 @@ interface TagData {
   vote_count: number;
   has_voted: boolean;
   voter_names: string[];
-  creator_name: string;
+  creator_name: string | null;
 }
 
 interface TagPillProps {
