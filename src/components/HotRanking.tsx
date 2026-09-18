@@ -4,7 +4,6 @@ interface TagData {
   id: string;
   name: string;
   vote_count: number;
-  voter_names: string[];
 }
 
 interface HotRankingProps {
@@ -46,8 +45,7 @@ export default function HotRanking({ tags, boardName, boardColor, onClose }: Hot
                   {tag.name}
                 </div>
                 <div className="text-xs text-gray-400 mt-0.5">
-                  {tag.voter_names.slice(0, 3).join('、')}
-                  {tag.voter_names.length > 3 && ` 等${tag.voter_names.length}人`}
+                  已有 {tag.vote_count} 人 +1
                 </div>
               </div>
               <div

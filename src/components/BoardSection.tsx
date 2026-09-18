@@ -14,7 +14,7 @@ interface TagData {
   creator_name: string;
   created_at: string;
   vote_count: number;
-  voter_ids: string[];
+  has_voted: boolean;
   voter_names: string[];
 }
 
@@ -40,12 +40,12 @@ export default function BoardSection({ board, userId, refreshKey, onDataChange, 
   const [newTag, setNewTag] = useState('');
   const [adding, setAdding] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: 'error' | 'info' } | null>(null);
-  const [selectedTag, setSelectedTag] = useState<TagData | null>(null);
+  const [selectedTagId, setSelectedTagId] = useState<string | null>(null);
   const [showHot, setShowHot] = useState(false);
 
   const fetchTags = async () => {
     try {
-      const res = await fetch(`/api/tags?board=${board.id}`);
+      const res = await fetch(`/api/tags?board=${board.id}&user_id=${encodeURIComponent(userId)}`);
       const data = await res.json();
       if (res.ok && data.success) {
         setTags(data.data);
@@ -119,6 +119,11 @@ export default function BoardSection({ board, userId, refreshKey, onDataChange, 
   const sortedTags = [...tags].sort((a, b) => b.vote_count - a.vote_count);
   const hotTags = sortedTags.slice(0, 5).filter((t) => t.vote_count > 0);
 
+  // 始终从最新 tags 中派生，保证弹窗内投票状态随刷新同步
+  const selectedTag = selectedTagId
+    ? tags.find((t) => t.id === selectedTagId) ?? null
+    : null;
+
   return (
     <>
       <div
@@ -162,7 +167,7 @@ export default function BoardSection({ board, userId, refreshKey, onDataChange, 
                   boardColor={board.color}
                   boardBgColor={board.bgColor}
                   onVote={handleVote}
-                  onClick={() => setSelectedTag(tag)}
+                  onClick={() => setSelectedTagId(tag.id)}
                 />
               ))}
             </div>
@@ -213,8 +218,9 @@ export default function BoardSection({ board, userId, refreshKey, onDataChange, 
           tag={selectedTag}
           userId={userId}
           boardColor={board.color}
-          onClose={() => setSelectedTag(null)}
+          onClose={() => setSelectedTagId(null)}
           onDataChange={onDataChange}
+          onVote={handleVote}
         />
       )}
     </>

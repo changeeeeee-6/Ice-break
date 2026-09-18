@@ -6,7 +6,7 @@ interface TagData {
   id: string;
   name: string;
   vote_count: number;
-  voter_ids: string[];
+  has_voted: boolean;
   voter_names: string[];
   creator_name: string;
 }
@@ -22,7 +22,7 @@ interface TagPillProps {
 
 export default function TagPill({ tag, userId, boardColor, boardBgColor, onVote, onClick }: TagPillProps) {
   const [animating, setAnimating] = useState(false);
-  const hasVoted = tag.voter_ids.includes(userId);
+  const hasVoted = tag.has_voted;
 
   const handleVote = (e: React.MouseEvent) => {
     e.stopPropagation();

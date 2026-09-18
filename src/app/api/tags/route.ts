@@ -7,6 +7,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const board = searchParams.get('board');
+    const currentUserId = searchParams.get('user_id');
 
     if (!board) {
       return NextResponse.json(
@@ -61,11 +62,15 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Build response
+    // Build response.
+    // 匿名规则：仅当当前用户对该标签投过票时，才返回投票者昵称列表；
+    // 否则只返回人数，不泄露任何投票者身份信息。
     const result = tags.map((tag: { id: string; board: string; name: string; normalized_name: string; created_by: string; created_at: string }) => {
       const tagVotes = votes.filter((v: { tag_id: string }) => v.tag_id === tag.id);
       const voteCount = tagVotes.length;
-      const voterIds = tagVotes.map((v: { user_id: string }) => v.user_id);
+      const hasVoted = currentUserId
+        ? tagVotes.some((v: { user_id: string }) => v.user_id === currentUserId)
+        : false;
 
       return {
         id: tag.id,
@@ -76,8 +81,11 @@ export async function GET(request: NextRequest) {
         creator_name: userMap[tag.created_by] || '未知',
         created_at: tag.created_at,
         vote_count: voteCount,
-        voter_ids: voterIds,
-        voter_names: voterIds.map((id: string) => userMap[id] || '未知'),
+        has_voted: hasVoted,
+        // 仅同投者可见具体名单
+        voter_names: hasVoted
+          ? tagVotes.map((v: { user_id: string }) => userMap[v.user_id] || '未知')
+          : [],
       };
     });
 

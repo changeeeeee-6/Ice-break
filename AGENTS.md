@@ -73,3 +73,5 @@ src/
 - 数据刷新：前端每 5 秒轮询 + 操作后立即刷新
 - 标签归一化：全角→半角、CJK标点→ASCII、小写、空格合并
 - 防重复：唯一索引 (board, normalized_name)
+- 投票匿名（后端强约束）：GET /api/tags 与 /api/tags/[id] 必须带 user_id；仅当该用户对标签投过票时才返回 voter_names，否则只返回 vote_count（禁止下发任何投票者 ID/昵称）。添加者 creator_name 始终公开
+- 详情弹窗内可发送 emoji 互动，emoji 互动墙昵称公开

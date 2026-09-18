@@ -6,7 +6,7 @@ interface TagData {
   id: string;
   name: string;
   vote_count: number;
-  voter_ids: string[];
+  has_voted: boolean;
   voter_names: string[];
   creator_name: string;
 }
@@ -26,6 +26,7 @@ interface TagDetailModalProps {
   boardColor: string;
   onClose: () => void;
   onDataChange: () => void;
+  onVote: (tagId: string) => void;
 }
 
 const QUICK_EMOJIS = [
@@ -34,7 +35,7 @@ const QUICK_EMOJIS = [
   '😘', '🤩', '😜', '🫡', '💀', '🤝', '👀', '🫶',
 ];
 
-export default function TagDetailModal({ tag, userId, boardColor, onClose, onDataChange }: TagDetailModalProps) {
+export default function TagDetailModal({ tag, userId, boardColor, onClose, onDataChange, onVote }: TagDetailModalProps) {
   const [reactions, setReactions] = useState<EmojiReaction[]>([]);
   const [emojiInput, setEmojiInput] = useState('');
   const [sending, setSending] = useState(false);
@@ -116,9 +117,9 @@ export default function TagDetailModal({ tag, userId, boardColor, onClose, onDat
             <div className="text-2xl font-bold text-blue-600">{tag.vote_count}</div>
             <div className="text-xs text-blue-500 mt-1">+1 人数</div>
           </div>
-          <div className="flex-1 bg-indigo-50 rounded-xl p-3 text-center">
-            <div className="text-2xl font-bold text-indigo-600">{tag.voter_names.length}</div>
-            <div className="text-xs text-indigo-500 mt-1">参与同学</div>
+          <div className="flex-1 bg-sky-50 rounded-xl p-3 text-center">
+            <div className="text-2xl font-bold text-sky-600">{reactions.length}</div>
+            <div className="text-xs text-sky-500 mt-1">表情互动</div>
           </div>
         </div>
 
@@ -130,14 +131,24 @@ export default function TagDetailModal({ tag, userId, boardColor, onClose, onDat
           </div>
         </div>
 
-        {/* Voters */}
+        {/* Voters - 匿名规则：只有自己也 +1 过，才能看到具体名单 */}
         <div className="mb-4">
-          <h4 className="text-sm font-semibold text-gray-600 mb-2">
-            +1 过的同学 ({tag.voter_names.length})
-          </h4>
-          {tag.voter_names.length === 0 ? (
-            <p className="text-gray-400 text-sm">还没有人为这个标签 +1</p>
-          ) : (
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-semibold text-gray-600">
+              +1 过的同学 ({tag.vote_count})
+            </h4>
+            <button
+              onClick={() => onVote(tag.id)}
+              className="px-3 py-1 rounded-full text-white text-xs font-medium transition-all hover:opacity-90"
+              style={{ background: tag.has_voted ? '#94a3b8' : boardColor }}
+            >
+              {tag.has_voted ? '取消我的 +1' : '我也 +1'}
+            </button>
+          </div>
+
+          {tag.vote_count === 0 ? (
+            <p className="text-gray-400 text-sm">还没有人为这个标签 +1，快来支持一下吧</p>
+          ) : tag.has_voted ? (
             <div className="flex flex-wrap gap-2">
               {tag.voter_names.map((name, i) => (
                 <span
@@ -147,6 +158,28 @@ export default function TagDetailModal({ tag, userId, boardColor, onClose, onDat
                   {name}
                 </span>
               ))}
+            </div>
+          ) : (
+            <div className="bg-amber-50 border border-amber-100 rounded-xl p-3">
+              <p className="text-sm text-amber-700">
+                已有 {tag.vote_count} 人 +1。为保护大家的隐私，+1 名单匿名，
+                你也点一下 <span className="font-semibold">+1</span> 就能看到都有谁啦。
+              </p>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {Array.from({ length: Math.min(tag.vote_count, 8) }).map((_, i) => (
+                  <span
+                    key={i}
+                    className="inline-flex items-center bg-white text-gray-300 border border-gray-100 rounded-full px-3 py-1 text-sm"
+                  >
+                    匿名
+                  </span>
+                ))}
+                {tag.vote_count > 8 && (
+                  <span className="inline-flex items-center text-gray-400 text-sm px-1">
+                    等 {tag.vote_count} 人
+                  </span>
+                )}
+              </div>
             </div>
           )}
         </div>
